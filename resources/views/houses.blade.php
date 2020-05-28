@@ -44,8 +44,9 @@
         <section class="houseMembers secret">
           <h2>Membres</h2>
 
-            <form class="houseRankForm">
-                <select id="triMembre1" class="triMembre1">
+            <form method="post" class="houseRankForm">
+                {{ csrf_field() }}
+                <select id="triMembre1" name="triMembre1">
                     <option value="alpha">Ordre alphabétique</option>
                     <option value="NbPoints">Nombre de points</option>
                     <option value="NbDefis">Nombre de défis gagnés</option>
@@ -150,8 +151,9 @@
       <section class="houseMembers secret">
         <h2>Membres</h2>
 
-          <form class="houseRankForm">
-              <select id="triMembre3" class="triMembre3">
+          <form method="post" class="houseRankForm">
+              {{ csrf_field() }}
+              <select id="triMembre3" name="triMembre3">
                   <option value="alpha">Ordre alphabétique</option>
                   <option value="NbPoints">Nombre de points</option>
                   <option value="NbDefis">Nombre de défis gagnés</option>
@@ -250,8 +252,9 @@
 
         <h2>Membres</h2>
 
-        <form class="houseRankForm">
-          <select id="triMembre2" class="triMembre2">
+        <form method="post" class="houseRankForm">
+            {{ csrf_field() }}
+          <select id="triMembre2" name="triMembre2">
             <option value="alpha">Ordre alphabétique</option>
             <option value="NbPoints">Nombre de points</option>
             <option value="NbDefis">Nombre de défis gagnés</option>
