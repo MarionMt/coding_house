@@ -48,3 +48,7 @@ Route::get('/utilisateur', function () {
 Route::get('/quizz', function () {
     return view('quizz');
 });
+
+Route::match(['get', 'post'],'/ajout', function () {
+    return view('addingPoints');
+});
