@@ -1,3 +1,7 @@
+<?php include "com.google.appengine.api.users.*";
+
+//UserService userService = UserServiceFactory.getUserService(); ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -33,6 +37,14 @@ use Illuminate\Support\Facades\DB;$numero = rand(0, 3);// un numero aléatoire d
         </label></br>
         <input type="submit" value="validé" name="submit"/>
         <button><span>MDP oublié</span></button>
+
+        <% if (userService.getCurrentUser() == null) { %>
+        <p><a href="<%= userService.createLoginURL('/') %>">Se connecter</a></p>
+        <% }
+        else { %>
+        <p>Bonjour <%= userService.getCurrentUser().getNickname() %></p>
+        <p><a href="<%= userService.createLogoutURL('/') %>">Se déconnecter</a></p>
+        <% } %>
 
         <div><h1>
                 <?php
