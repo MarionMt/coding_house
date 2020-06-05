@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
 
 
@@ -38,3 +39,13 @@ h1, h2, .numberRanking{
 }
 
 /*backgroud*/
+
+.userRank_1{
+    color : gold;
+}
+.userRank_2{
+    color : #9ea3a3;
+}
+.userRank_3{
+    color : #e0977a;
+}
