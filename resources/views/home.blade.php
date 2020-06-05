@@ -2,7 +2,12 @@
 <html lang="fr">
 <?php
 use Illuminate\Support\Facades\DB;
+
+use App\User;
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Concerns\ToModel;
 ?>
+
 
 <head>
     <meta charset="UTF-8">
@@ -23,6 +28,7 @@ use Illuminate\Support\Facades\DB;
 @include('header')
 
 <h1>Coding Houses</h1>
+
 
 <section id="rankings">
     <div class="bg"></div>
