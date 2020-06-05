@@ -235,9 +235,7 @@ echo '<form name="addPointsForm" method="post">'. csrf_field() .
     <select required="required" name="studentId" size="5">';
 
     foreach ($studentList as $student){
-
       echo '<option value="'.$student->id.'">'.$student->first_name.'</option>';
-
       };
 
    echo '</select>
@@ -384,6 +382,96 @@ if(isset($_POST['envoi'])){
       }
 
 }
+
+    $studentList = DB::table('users')
+        ->where('statut', 'student')
+        ->whereNotNull('house_id')
+        ->get();
+
+    $notesList = DB::table('type_points')
+        ->where('type_points.type', 'note')
+        ->get();
+
+    echo '<h3>Points par notes</h3>
+        <form name="addNoteForm" method="post">'. csrf_field() .
+        '<section class="addPoints">
+    <label class="student">Eleve
+    <select required="required" name="studentId" size="5">';
+
+    foreach ($studentList as $student){
+        echo '<option value="'.$student->id.'">'.$student->first_name.'</option>';
+    };
+
+    echo '</select>
+    </label> </br>
+    <label class="challenge" for="noteId">Matière</label>
+    <select required="required" name="noteId" id="noteId" size="5">';
+    foreach ($notesList as $note){
+        echo '<option value="'.$note->id.'">'.$note->name.'</option>';
+    }
+    echo '</select>
+    </label> </br>
+    <label class="points">Nombre de points
+    <input required="required" name="nbrPoints" type="number"/>
+    </label>
+    </br>
+    <input type="submit" name="envoiNote">
+
+    </section>
+
+</form>';
+
+    if(isset($_POST['envoiNote'])){
+
+        $nbr_points = $_POST['nbrPoints'];
+        $student_id = $_POST['studentId'];
+        $note_id = $_POST['noteId'];
+        date_default_timezone_set('Europe/Paris');
+        $date = date("Y-m-d H:i:s");
+
+        $house = DB::table('users')
+            ->select('users.house_id AS houseId', 'users.id')
+            ->where('id', $student_id)
+            ->get();
+
+        $houseId=$house[0]->houseId;
+        foreach ($house as $house){
+            $house_id = $house->houseId;
+        }
+
+        DB::table('mvt_points')->insert(
+            array(
+                'label' => "$nbr_points",
+                'users_id' => "$student_id",
+                'type_point_id' => "$note_id",
+                'created_at' => "$date",
+            )
+        );
+
+
+        DB::table('users')
+            ->where("id", $student_id)
+            ->increment('total_pts', "$nbr_points"
+            );
+
+        DB::table('users')
+            ->where("id", $student_id)
+            ->increment('total_pts_note', "$nbr_points"
+            );
+
+        DB::table('houses')
+            ->where("id", $house_id)
+            ->increment('total_pts',"$nbr_points"
+            );
+
+        DB::table('houses')
+            ->where("id", $house_id)
+            ->increment('total_pts_note',"$nbr_points"
+            );
+
+        unset($_POST);
+    }
+
 }
 echo "</div>";
 ?>
