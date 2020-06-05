@@ -199,7 +199,7 @@ if($userType[0]->statut=='PO'){
     echo'<form name="newTypePtsForm" method="post">' . csrf_field() .
             '<label class="makePoints">
             <input name="nameTypePoints" type="text" required="require"/>
-            <input type="submit" name="MakeNewPts" value="créer le type de points"/>
+            <input type="submit" name="MakeNewPts" value="Créer"/>
             </label>
         </form>';
 
@@ -215,7 +215,7 @@ if($userType[0]->statut=='PO'){
         );
     }
 
-    echo  '<div id="addPts"><h2>Ajouter des points</h2>';
+    echo  '<div id="addPoints"><div id="addPts"><h2>Ajouter des points</h2>';
 $studentList = DB::table('users')
 ->where('statut', 'student')
 ->whereNotNull('house_id')
@@ -231,7 +231,7 @@ $typeptsList = DB::table('type_points')
 
 echo '<form name="addPointsForm" method="post">'. csrf_field() .
     '<section class="addPoints">
-    <label class="student">Eleve
+    <label class="student">Eleve<br/>
     <select required="required" name="studentId" size="5">';
 
     foreach ($studentList as $student){
@@ -240,30 +240,23 @@ echo '<form name="addPointsForm" method="post">'. csrf_field() .
 
    echo '</select>
     </label> </br>
-    <label class="challenge">PO
+    <label class="challenge">PO<br/>
     <select required="required" name="challengeId" size="5">';
     foreach ($challengeList as $challenge){
           echo '<option value="'.$challenge->id.'">'.$challenge->name.'</option>';
     }
-    echo '</select>
-    </label> </br>
-    <label class="typePts">type de points
-    <select required="required" name="typeId" size="5">';
-    foreach ($typeptsList as $type){
-        echo '<option value="'.$type->id.'">'.$type->name.'</option>';
-    }
 
    echo '</select>
     </label> </br>
-    <label class="points">Nombre de points
-    <input required="required" name="nbrPoints" type="number"/>
+    <label class="points">Nombre de points<br/>
+    <input required="required" name="nbrPoints" type="number" max="1000" style="width:80px;"/>
     </label>
     </br>
     <input type="submit" name="envoi">
 
     </section>
 
-</form>';
+</form></div>';
 
 if(isset($_POST['envoi'])){
 
@@ -392,10 +385,10 @@ if(isset($_POST['envoi'])){
         ->where('type_points.type', 'note')
         ->get();
 
-    echo '<h3>Points par notes</h3>
+    echo '<div id="addPtsNote"><h2>Points par notes</h2>
         <form name="addNoteForm" method="post">'. csrf_field() .
         '<section class="addPoints">
-    <label class="student">Eleve
+    <label class="student">Eleve<br/>
     <select required="required" name="studentId" size="5">';
 
     foreach ($studentList as $student){
@@ -404,22 +397,22 @@ if(isset($_POST['envoi'])){
 
     echo '</select>
     </label> </br>
-    <label class="challenge" for="noteId">Matière</label>
+    <label class="challenge" for="noteId">Matière</label><br/>
     <select required="required" name="noteId" id="noteId" size="5">';
     foreach ($notesList as $note){
         echo '<option value="'.$note->id.'">'.$note->name.'</option>';
     }
     echo '</select>
     </label> </br>
-    <label class="points">Nombre de points
-    <input required="required" name="nbrPoints" type="number"/>
+    <label class="points">Nombre de points<br/>
+    <input required="required" name="nbrPoints" type="number" max="1000" style="width:80px;"/>
     </label>
     </br>
     <input type="submit" name="envoiNote">
 
     </section>
 
-</form>';
+</form></div></div>';
 
     if(isset($_POST['envoiNote'])){
 
