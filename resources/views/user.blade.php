@@ -189,9 +189,7 @@
                 </button>
 
             </div>
-
         </div>
-
                     <?php
 
 if($userType[0]->statut=='PO'){
@@ -221,37 +219,14 @@ $studentList = DB::table('users')
 ->whereNotNull('house_id')
 ->get();
 
-$challengeList = DB::table('type_points')
-->where('type_points.type', 'PO')
-->orWhere('type_points.type', 'events')
-->get();
-
-$typeptsList = DB::table('type_points')
-->get();
-
 echo '<form name="addPointsForm" method="post">'. csrf_field() .
     '<section class="addPoints">
-    <label class="student">Eleve
+    <label class="student">Élève
     <select required="required" name="studentId" size="5">';
 
     foreach ($studentList as $student){
       echo '<option value="'.$student->id.'">'.$student->first_name.'</option>';
       };
-
-   echo '</select>
-    </label> </br>
-    <label class="challenge">PO
-    <select required="required" name="challengeId" size="5">';
-    foreach ($challengeList as $challenge){
-          echo '<option value="'.$challenge->id.'">'.$challenge->name.'</option>';
-    }
-    echo '</select>
-    </label> </br>
-    <label class="typePts">type de points
-    <select required="required" name="typeId" size="5">';
-    foreach ($typeptsList as $type){
-        echo '<option value="'.$type->id.'">'.$type->name.'</option>';
-    }
 
    echo '</select>
     </label> </br>
@@ -267,122 +242,73 @@ echo '<form name="addPointsForm" method="post">'. csrf_field() .
 
 if(isset($_POST['envoi'])){
 
-      $nbr_points = $_POST['nbrPoints'];
-      $student_id = $_POST['studentId'];
-      $challenge_id = $_POST['challengeId'];
-      date_default_timezone_set('Europe/Paris');
-      $date = date("Y-m-d H:i:s");
+    $nbr_points = $_POST['nbrPoints'];
+    $student_id = $_POST['studentId'];
+    date_default_timezone_set('Europe/Paris');
+    $date = date("Y-m-d H:i:s");
 
-      $student_points = DB::table('users')
-      ->select('users.id', 'users.total_pts', 'users.total_pts_po')
-      ->where('id', $student_id)
-      ->get();
+    $namesPo= DB::table('users')
+        ->select('users.first_name AS poName')
+        ->where('id', $idUser)
+        ->get();
+    $name_po = $namesPo[0]->poName;
 
-      $type_pts = DB::table('type_points')
-      ->select ('type_points.type', 'type_points.id')
-      ->where ('id', $challenge_id )
-      ->get ();
+    $typesId= DB::table('type_points')
+        ->select('id AS idType')
+        ->where('name', $name_po)
+        ->get();
+    $type_id=$typesId[0]->idType;
 
-      $house = DB::table('users')
-      ->select('users.house_id', 'users.id')
-      ->where('id', $student_id)
-      ->get();
+    $house = DB::table('users')
+        ->select('users.house_id AS houseId', 'users.id')
+        ->where('id', $student_id)
+        ->get();
 
-      foreach ($house as $house){
-            $house_id = $house->house_id;
-      }
+    $house_id=$house[0]->houseId;
+    /*foreach ($house as $house){
+        $house_id = $house->houseId;
+    }
+    */
 
-      $house_pts = DB::table('houses')
-      ->select('houses.total_pts', 'houses.total_pts_po')
-      ->where('id', $house_id)
-      ->get();
+    DB::table('mvt_points')->insert(
+        array(
+            'label' => "$nbr_points",
+            'users_id' => "$student_id",
+            'type_point_id' => "$type_id",
+            'professor_id' => "$idUser",
+            'created_at' => "$date",
+        )
+    );
 
-      foreach ($house_pts as $add_house_pts){
-            $house_total_pts = $add_house_pts->total_pts;
-      }
 
-      foreach ($house_pts as $add_house_pts_po){
-            $house_total_pts_po = $add_house_pts->total_pts_po;
-      }
+    DB::table('users')
+        ->where("id", $student_id)
+        ->increment('total_pts', "$nbr_points"
+        );
 
-      foreach ($student_points as $add){
-            $total_pts = $add->total_pts;
-      }
+    DB::table('users')
+        ->where("id", $student_id)
+        ->increment('total_pts_po', "$nbr_points"
+        );
 
-      foreach ($student_points as $add){
-            $total_pts_po = $add->total_pts_po;
-      }
+    DB::table('houses')
+        ->where("id", $house_id)
+        ->increment('total_pts',"$nbr_points"
+        );
 
-      foreach ($type_pts as $type) {
-            $type_select = $type->type;
-      }
+    DB::table('houses')
+        ->where("id", $house_id)
+        ->increment('total_pts_po',"$nbr_points"
+        );
 
-      $professor_pts = DB::table('users')
-      ->select('users.total_given_pts')
-      ->where('id', $idUser)
-      ->get();
+    DB::table('users')
+        ->where("id", $idUser)
+        ->increment('total_given_pts',"$nbr_points"
+        );
 
-      foreach ($professor_pts as $professor){
-          $given_pts = $professor->total_given_pts;
-      }
-
-     if ($type_select=="PO"){
-            DB::table('mvt_points')->insert(
-            array(
-                  'label' => "$nbr_points",
-                  'users_id' => "$student_id",
-                  'type_point_id' => "$challenge_id",
-                  'created_at' => "$date",
-                  'professor_id' =>"$idUser"
-            )
-            );
-
-            DB::table('users')
-            ->where("id", $idUser)
-            ->update(
-                array(
-                    'total_given_pts'=>"$nbr_points"+"$given_pts"
-                )
-                );
-
-            DB::table('users')
-            ->where("id", $student_id)
-            ->update(
-                  array(
-                        'total_pts'=> "$nbr_points"+"$total_pts"
-                  )
-                  );
-
-            DB::table('users')
-            ->where("id", $student_id)
-            ->update(
-                  array(
-                        'total_pts_po'=> "$nbr_points"+"$total_pts_po"
-                  )
-            );
-
-            DB::table('houses')
-            ->where("id", $house_id)
-            ->update(
-                  array(
-                        'total_pts'=>"$nbr_points"+"$house_total_pts"
-                  )
-                  );
-            DB::table('houses')
-            ->where("id", $house_id)
-            ->update(
-                  array(
-                        'total_pts_po'=>"$nbr_points"+"$house_total_pts_po"
-                  )
-                  );
-            }
-
-      else {
-            echo "Une erreur s'est produite. Veuillez réessayer.";
-      }
+    unset($_POST);
 
 }
-
     $studentList = DB::table('users')
         ->where('statut', 'student')
         ->whereNotNull('house_id')
@@ -392,7 +318,7 @@ if(isset($_POST['envoi'])){
         ->where('type_points.type', 'note')
         ->get();
 
-    echo '<h3>Points par notes</h3>
+    echo '<h2>Points par notes</h2>
         <form name="addNoteForm" method="post">'. csrf_field() .
         '<section class="addPoints">
     <label class="student">Eleve
