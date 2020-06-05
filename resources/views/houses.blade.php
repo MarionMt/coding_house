@@ -112,16 +112,16 @@ use Illuminate\Support\Facades\DB;
                 foreach ($results as $users) {
                     $rank++;
                     echo '<img class="houseIcon" src="img/logoCrackend_';
-                    if($rank<=3){
-                        echo 'R'.$rank.'.png"';
-                    }else {
                         $logoLvl = DB::select('SELECT logo_lvl
                                 FROM users
                                 WHERE users.id = :id',['id' => $users->idUser] );
                         echo $logoLvl[0]->logo_lvl.'.png"';
-                    }
                     echo 'alt="logo">';
-                    echo ''.$rank." .". $users->first_name . ' : ' . $users->pts . " pts<br/>";
+                    echo '<span ';
+                    if ($rank <=3){
+                        echo 'class= "userRank_'.$rank.'" ';
+                    }
+                    echo '>'.$rank .'. '. $users->first_name . ' : ' . $users->pts . " pts</span><br/>";
                     if($rank==intdiv(sizeof($results),2))  {
                         echo '</p>';
                         echo '<p>';
@@ -209,16 +209,16 @@ use Illuminate\Support\Facades\DB;
                 foreach ($results as $users) {
                     $rank++;
                     echo '<img class="houseIcon" src="img/logoGitsune_';
-                    if($rank<=3){
-                        echo 'R'.$rank.'.png"';
-                    }else {
                         $logoLvl = DB::select('SELECT logo_lvl
                                 FROM users
                                 WHERE users.id = :id',['id' => $users->idUser] );
                         echo $logoLvl[0]->logo_lvl.'.png"';
-                    }
                     echo 'alt="logo">';
-                    echo ''.$rank." .". $users->first_name . ' : ' . $users->pts . " pts<br/>";
+                    echo '<span ';
+                    if ($rank <=3){
+                        echo 'class= "userRank_'.$rank.'" ';
+                    }
+                    echo '>'.$rank .'. '. $users->first_name . ' : ' . $users->pts . " pts</span><br/>";
                     if($rank==intdiv(sizeof($results),2))  {
                         echo '</p>';
                         echo '<p>';
@@ -304,16 +304,16 @@ use Illuminate\Support\Facades\DB;
                 foreach ($results as $users) {
                     $rank++;
                     echo '<img class="houseIcon" src="img/logoPhoeniXML_';
-                    if($rank<=3){
-                        echo 'R'.$rank.'.png"';
-                    }else {
                         $logoLvl = DB::select('SELECT logo_lvl
                                 FROM users
                                 WHERE users.id = :id',['id' => $users->idUser] );
                         echo $logoLvl[0]->logo_lvl.'.png"';
-                    }
                     echo 'alt="logo">';
-                    echo ''.$rank." .". $users->first_name . ' : ' . $users->pts . " pts<br/>";
+                    echo '<span ';
+                    if ($rank <=3){
+                        echo 'class= "userRank_'.$rank.'" ';
+                    }
+                    echo '>'.$rank .'. '. $users->first_name . ' : ' . $users->pts . " pts</span><br/>";
                     if($rank==intdiv(sizeof($results),2))  {
                         echo '</p>';
                         echo '<p>';
